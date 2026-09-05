@@ -18,8 +18,6 @@ import java.util.Scanner;
 
 void main()
 {
-    Scanner scanner = new Scanner(System.in);
-
     String inputString = "Когда-нибудь ты закроешь сессию без долгов, но это уже совсем другая история.";
     System.out.println("Изначальная строка: " + inputString);
 
@@ -28,52 +26,10 @@ void main()
     WordIndexer indexer = new WordIndexer(splittedString);
 
     int countOfWords = indexer.GetWordsCount();
-    int[] swapPositions = new int[2];
-
     System.out.println("Количество слов в строке: " + countOfWords);
 
-    do
-    {
-        System.out.println("Введите номер первого слова, которое хотите переместить: ");
-
-        while (!scanner.hasNextInt())
-        {
-            System.out.println("Ошибка! Введите целое число.");
-            scanner.next();
-        }
-
-        swapPositions[0] = scanner.nextInt();
-
-        if (swapPositions[0] <= 0 || swapPositions[0] > countOfWords)
-        {
-            System.out.println("Ошибка! Число должно быть в диапозоне от 1 до " + countOfWords + " включительно.");
-        }
-
-    } while (swapPositions[0] <= 0 || swapPositions[0] > countOfWords);
-
-    do
-    {
-        System.out.println("Введите номер второго слова, которое хотите переместить: ");
-
-        while (!scanner.hasNextInt())
-        {
-            System.out.println("Ошибка! Введите целое число.");
-            scanner.next();
-        }
-
-        swapPositions[1] = scanner.nextInt();
-
-        if (swapPositions[1] <= 0 || swapPositions[1] > countOfWords)
-        {
-            System.out.println("Ошибка! Число должно быть в диапозоне от 1 до " + countOfWords + " включительно.");
-        }
-
-        if (swapPositions[0] == swapPositions[1])
-        {
-            System.out.println("Ошибка! Позиции слов не должны совпадать.");
-        }
-
-    } while (swapPositions[1] <= 0 || swapPositions[1] > countOfWords || swapPositions[0] == swapPositions[1]);
+    InputProcessor inputProcessor = new InputProcessor(countOfWords);
+    int[] swapPositions = inputProcessor.GetSwapPositionsFromConsole();
 
     int[] wordIndices = indexer.GetWordIndicesForSwap(swapPositions);
 
@@ -196,4 +152,65 @@ class SentenceShuffler
     {
         inputSentence = new ArrayList<>(sentence);
     }
+}
+
+class InputProcessor
+{
+    private Scanner scanner = new Scanner(System.in);
+    private int countOfWords;
+
+    public int[] GetSwapPositionsFromConsole()
+    {
+        int[] positions = new int[2];
+
+        do
+        {
+            System.out.println("Введите номер первого слова, которое хотите переместить: ");
+
+            while (!scanner.hasNextInt())
+            {
+                System.out.println("Ошибка! Введите целое число.");
+                scanner.next();
+            }
+
+            positions[0] = scanner.nextInt();
+
+            if (positions[0] <= 0 || positions[0] > countOfWords)
+            {
+                System.out.println("Ошибка! Число должно быть в диапозоне от 1 до " + countOfWords + " включительно.");
+            }
+
+        } while (positions[0] <= 0 || positions[0] > countOfWords);
+
+        do
+        {
+            System.out.println("Введите номер второго слова, которое хотите переместить: ");
+
+            while (!scanner.hasNextInt())
+            {
+                System.out.println("Ошибка! Введите целое число.");
+                scanner.next();
+            }
+
+            positions[1] = scanner.nextInt();
+
+            if (positions[1] <= 0 || positions[1] > countOfWords)
+            {
+                System.out.println("Ошибка! Число должно быть в диапозоне от 1 до " + countOfWords + " включительно.");
+            }
+
+            if (positions[0] == positions[1])
+            {
+                System.out.println("Ошибка! Позиции слов не должны совпадать.");
+            }
+
+        } while (positions[1] <= 0 || positions[1] > countOfWords || positions[0] == positions[1]);
+
+        return positions;
+    }
+
+    InputProcessor(int countOfWords)
+    {
+        this.countOfWords = countOfWords;
+    };
 }
